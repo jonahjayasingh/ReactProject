@@ -7,6 +7,8 @@ import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
 } from "firebase/auth";
 
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
@@ -54,16 +56,7 @@ export const createUserDocumentFromAuth = async (
         ...additionalInformation,
       });
     } catch (error) {
-      switch (error.code) {
-        case "auth/wrong-password":
-          alert("incorrect password for email");
-          break;
-        case "auth/user-not-found":
-          alert("no user associated with this email");
-          break;
-        default:
-          console.log(error);
-      }
+      console.log(error.message);
     }
   }
 };
@@ -75,5 +68,11 @@ export const creatAuthUserWithEmailAndPassword = async (email, password) => {
 };
 
 export const signInUsingEmailAndPassword = async (email, password) => {
-  signInWithEmailAndPassword(auth, email, password);
+  if (!email || !password) return;
+  return await signInWithEmailAndPassword(auth, email, password);
 };
+
+export const SignOutUser = () => signOut(auth);
+
+export const onAuthStateChangedListener = (callback) =>
+  onAuthStateChanged(auth, callback);
